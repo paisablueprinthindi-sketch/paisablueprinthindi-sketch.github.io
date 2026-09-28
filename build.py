@@ -30,7 +30,7 @@ def save_deals(deals):
         json.dump(deals, f, ensure_ascii=False, indent=2)
 
 def detect_brand(text, link):
-    combined = (text + " " + link).lower()
+    combined = (str(text) + " " + str(link)).lower()
     if "flipkart" in combined or "fktr.in" in combined or "shopsy" in combined:
         return "flipkart"
     elif "amazon" in combined or "amzn" in combined:
@@ -131,36 +131,44 @@ def generate_html(deals):
     cards_html = ""
 
     for idx, deal in enumerate(deals):
-        # Clean Schema
+        # सुरक्षित डेटा एक्सेस (अगर कोई पुराना डेटा हो तो भी क्रैश न हो)
+        full_text = deal.get("full_text") or str(deal.get("text", "Loot Deal"))[:80].replace('"', '').replace('\n', ' ')
+        link = deal.get("link", SITE_URL)
+        image = deal.get("image") or ""
+        brand = deal.get("brand") or detect_brand(full_text, link)
+        time_str = deal.get("time", "")
+        raw_html = deal.get("html") or deal.get("text", "")
+
+        # Schema element
         schema_items.append({
             "@type": "ListItem",
             "position": idx + 1,
-            "name": deal["full_text"],
-            "url": deal["link"],
-            "image": deal["image"] or SITE_URL
+            "name": full_text,
+            "url": link,
+            "image": image or SITE_URL
         })
 
         # WhatsApp Share Link
-        share_msg = f"🔥 लूट डील ऑफर: {deal['full_text']}\n\n👉 यहाँ से खरीदें: {deal['link']}\n\nऔर भी ताज़ा डील्स के लिए देखें: {SITE_URL}"
+        share_msg = f"🔥 लूट डील ऑफर: {full_text}\n\n👉 यहाँ से खरीदें: {link}\n\nऔर भी ताज़ा डील्स के लिए देखें: {SITE_URL}"
         wa_url = f"https://api.whatsapp.com/send?text={urllib.parse.quote(share_msg)}"
 
-        img_tag = f'<img src="{deal["image"]}" alt="Loot Deal" loading="lazy" class="card-img">' if deal["image"] else '<div class="no-img">🔥 LOOT DEAL</div>'
-        brand_badge = f'<span class="brand-tag {deal["brand"]}">{deal["brand"].upper()}</span>' if deal["brand"] != "other" else ''
+        img_tag = f'<img src="{image}" alt="Loot Deal" loading="lazy" class="card-img">' if image else '<div class="no-img">🔥 LOOT DEAL</div>'
+        brand_badge = f'<span class="brand-tag {brand}">{brand.upper()}</span>' if brand != "other" else ''
 
         cards_html += f"""
-        <div class="deal-card" data-brand="{deal['brand']}">
+        <div class="deal-card" data-brand="{brand}">
             {img_tag}
             <div class="card-body">
                 <div class="badge-row">
                     <span class="badge">LIVE OFFER</span>
                     {brand_badge}
                 </div>
-                <div class="card-text">{deal["html"]}</div>
+                <div class="card-text">{raw_html}</div>
                 <div class="card-footer">
-                    <span class="time">{deal["time"]}</span>
+                    <span class="time">{time_str}</span>
                     <div class="btn-group">
                         <a href="{wa_url}" target="_blank" class="wa-btn" title="Share on WhatsApp">💬 Share</a>
-                        <a href="{deal["link"]}" target="_blank" rel="nofollow noopener" class="buy-btn">Grab Deal 🚀</a>
+                        <a href="{link}" target="_blank" rel="nofollow noopener" class="buy-btn">Grab Deal 🚀</a>
                     </div>
                 </div>
             </div>
@@ -283,13 +291,13 @@ def generate_html(deals):
     
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(full_html)
-    print("✅ index.html generated successfully!")
+    print("✅ index.html with Safe Schema generated successfully!")
 
 def main():
     existing_deals = load_existing_deals()
     fresh_deals = fetch_telegram_deals()
 
-    existing_ids = {d["id"] for d in existing_deals}
+    existing_ids = {d.get("id") for d in existing_deals if "id" in d}
     new_additions = [d for d in fresh_deals if d["id"] not in existing_ids]
 
     all_deals = new_additions + existing_deals
