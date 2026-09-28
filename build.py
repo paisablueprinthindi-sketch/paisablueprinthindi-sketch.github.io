@@ -2,6 +2,7 @@ import os
 import re
 import json
 import html
+import urllib.parse
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
@@ -9,6 +10,7 @@ from datetime import datetime
 CHANNEL_URL = "https://t.me/s/Deal_Offers_Looto"
 DEALS_FILE = "deals.json"
 MAX_DEALS = 50
+SITE_URL = "https://paisablueprinthindi-sketch.github.io/"
 
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
@@ -26,6 +28,18 @@ def load_existing_deals():
 def save_deals(deals):
     with open(DEALS_FILE, "w", encoding="utf-8") as f:
         json.dump(deals, f, ensure_ascii=False, indent=2)
+
+def detect_brand(text, link):
+    combined = (text + " " + link).lower()
+    if "flipkart" in combined or "fktr.in" in combined or "shopsy" in combined:
+        return "flipkart"
+    elif "amazon" in combined or "amzn" in combined:
+        return "amazon"
+    elif "ajio" in combined:
+        return "ajio"
+    elif "myntra" in combined:
+        return "myntra"
+    return "other"
 
 def fetch_telegram_deals():
     try:
@@ -69,11 +83,15 @@ def fetch_telegram_deals():
             if not first_link:
                 first_link = f"https://t.me/{post_id}"
 
+            brand = detect_brand(clean_text, first_link)
+
             parsed_deals.append({
                 "id": post_id,
+                "brand": brand,
                 "image": image_url,
                 "html": raw_html,
                 "text": clean_text[:120] + "..." if len(clean_text) > 120 else clean_text,
+                "full_text": clean_text[:80].replace('"', '').replace('\n', ' '),
                 "link": first_link,
                 "time": datetime.utcnow().strftime("%d %b, %I:%M %p")
             })
@@ -83,42 +101,77 @@ def fetch_telegram_deals():
         print("Fetch error:", e)
         return []
 
+def generate_seo_files():
+    # 1. robots.txt
+    robots_content = f"""User-agent: *
+Allow: /
+Sitemap: {SITE_URL}sitemap.xml
+"""
+    with open("robots.txt", "w", encoding="utf-8") as f:
+        f.write(robots_content)
+
+    # 2. sitemap.xml
+    now_date = datetime.utcnow().strftime("%Y-%m-%d")
+    sitemap_content = f"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>{SITE_URL}</loc>
+    <lastmod>{now_date}</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>
+"""
+    with open("sitemap.xml", "w", encoding="utf-8") as f:
+        f.write(sitemap_content)
+    print("✅ robots.txt and sitemap.xml generated successfully!")
+
 def generate_html(deals):
     schema_items = []
     cards_html = ""
 
     for idx, deal in enumerate(deals):
-        # 100% Valid Google Directory Item Schema (No missing price error)
+        # Clean Schema
         schema_items.append({
             "@type": "ListItem",
             "position": idx + 1,
-            "name": deal["text"].replace('"', '').replace('\n', ' ')[:80],
+            "name": deal["full_text"],
             "url": deal["link"],
-            "image": deal["image"] or "https://paisablueprinthindi-sketch.github.io/"
+            "image": deal["image"] or SITE_URL
         })
 
-        # Card HTML
+        # WhatsApp Share Link
+        share_msg = f"🔥 लूट डील ऑफर: {deal['full_text']}\n\n👉 यहाँ से खरीदें: {deal['link']}\n\nऔर भी ताज़ा डील्स के लिए देखें: {SITE_URL}"
+        wa_url = f"https://api.whatsapp.com/send?text={urllib.parse.quote(share_msg)}"
+
         img_tag = f'<img src="{deal["image"]}" alt="Loot Deal" loading="lazy" class="card-img">' if deal["image"] else '<div class="no-img">🔥 LOOT DEAL</div>'
+        brand_badge = f'<span class="brand-tag {deal["brand"]}">{deal["brand"].upper()}</span>' if deal["brand"] != "other" else ''
+
         cards_html += f"""
-        <div class="deal-card">
+        <div class="deal-card" data-brand="{deal['brand']}">
             {img_tag}
             <div class="card-body">
-                <span class="badge">LIVE OFFER</span>
+                <div class="badge-row">
+                    <span class="badge">LIVE OFFER</span>
+                    {brand_badge}
+                </div>
                 <div class="card-text">{deal["html"]}</div>
                 <div class="card-footer">
                     <span class="time">{deal["time"]}</span>
-                    <a href="{deal["link"]}" target="_blank" rel="nofollow noopener" class="buy-btn">Grab Deal 🚀</a>
+                    <div class="btn-group">
+                        <a href="{wa_url}" target="_blank" class="wa-btn" title="Share on WhatsApp">💬 Share</a>
+                        <a href="{deal["link"]}" target="_blank" rel="nofollow noopener" class="buy-btn">Grab Deal 🚀</a>
+                    </div>
                 </div>
             </div>
         </div>
         """
 
-    # Official CollectionPage Schema for Deals Portals
     schema_json = json.dumps({
         "@context": "https://schema.org",
         "@type": "CollectionPage",
         "name": "Deal Offers Looto - Live Loot Deals & Discounts",
-        "url": "https://paisablueprinthindi-sketch.github.io/",
+        "url": SITE_URL,
         "description": "आज की सबसे सस्ती लूट डील्स, भारी डिस्काउंट और कूपन कोड्स। Amazon, Flipkart, Myntra की टॉप लाइव डील्स।",
         "mainEntity": {
             "@type": "ItemList",
@@ -134,32 +187,50 @@ def generate_html(deals):
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deal Offers Looto - Top 50 Live Loot Deals & Discounts</title>
     <meta name="description" content="आज की सबसे सस्ती लूट डील्स, भारी डिस्काउंट और कूपन कोड्स। Amazon, Flipkart, Myntra की टॉप लाइव डील्स।">
-    <link rel="canonical" href="https://paisablueprinthindi-sketch.github.io/">
+    <link rel="canonical" href="{SITE_URL}">
     <script type="application/ld+json">
     {schema_json}
     </script>
     <style>
-        :root {{ --primary: #ff4757; --dark: #1e293b; --light: #f8fafc; --text: #334155; }}
+        :root {{ --primary: #ff4757; --whatsapp: #25D366; --dark: #1e293b; --light: #f8fafc; --text: #334155; }}
         * {{ margin:0; padding:0; box-sizing:border-box; font-family: system-ui, -apple-system, sans-serif; }}
         body {{ background: var(--light); color: var(--text); padding-bottom: 50px; }}
         header {{ background: var(--dark); color: #fff; padding: 20px; text-align: center; border-bottom: 4px solid var(--primary); }}
         header h1 {{ font-size: 1.8rem; margin-bottom: 5px; color: #fff; }}
         .header-sub {{ font-size: 0.95rem; color: #94a3b8; }}
+        
         .banner {{ background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 15px; text-align: center; font-weight: bold; margin: 15px auto; max-width: 1100px; border-radius: 12px; }}
         .banner a {{ color: #ffeb3b; text-decoration: underline; margin-left: 8px; font-size: 1.05rem; }}
+        
+        /* Filters */
+        .filter-container {{ max-width: 1100px; margin: 10px auto; padding: 0 15px; display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; }}
+        .filter-btn {{ background: #fff; border: 1px solid #cbd5e1; padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; white-space: nowrap; transition: 0.2s; }}
+        .filter-btn.active {{ background: var(--dark); color: #fff; border-color: var(--dark); }}
+        
         .container {{ max-width: 1200px; margin: 0 auto; padding: 15px; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }}
         .deal-card {{ background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); display: flex; flex-direction: column; transition: transform 0.2s; border: 1px solid #e2e8f0; }}
         .deal-card:hover {{ transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }}
         .card-img {{ width: 100%; height: 200px; object-fit: cover; background: #e2e8f0; }}
         .no-img {{ width: 100%; height: 120px; background: #fee2e2; color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem; }}
+        
         .card-body {{ padding: 15px; display: flex; flex-direction: column; flex-grow: 1; }}
-        .badge {{ background: #fee2e2; color: #dc2626; font-size: 0.75rem; padding: 3px 8px; border-radius: 20px; font-weight: bold; align-self: flex-start; margin-bottom: 8px; }}
+        .badge-row {{ display: flex; gap: 8px; margin-bottom: 8px; }}
+        .badge {{ background: #fee2e2; color: #dc2626; font-size: 0.75rem; padding: 3px 8px; border-radius: 20px; font-weight: bold; }}
+        .brand-tag {{ font-size: 0.75rem; padding: 3px 8px; border-radius: 20px; font-weight: bold; text-transform: uppercase; }}
+        .brand-tag.flipkart {{ background: #e0f2fe; color: #0284c7; }}
+        .brand-tag.amazon {{ background: #fef3c7; color: #d97706; }}
+        .brand-tag.ajio {{ background: #f3e8ff; color: #7e22ce; }}
+        .brand-tag.myntra {{ background: #fce7f3; color: #be185d; }}
+        
         .card-text {{ font-size: 0.9rem; line-height: 1.4; color: #1e293b; margin-bottom: 15px; flex-grow: 1; word-break: break-word; }}
         .card-text a {{ color: #2563eb; text-decoration: none; font-weight: 500; }}
+        
         .card-footer {{ display: flex; align-items: center; justify-content: space-between; border-top: 1px solid #f1f5f9; padding-top: 10px; }}
         .time {{ font-size: 0.75rem; color: #94a3b8; }}
-        .buy-btn {{ background: var(--primary); color: #fff; text-decoration: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; font-size: 0.85rem; }}
-        .buy-btn:hover {{ background: #ee5253; }}
+        .btn-group {{ display: flex; gap: 6px; }}
+        .buy-btn {{ background: var(--primary); color: #fff; text-decoration: none; padding: 8px 12px; border-radius: 8px; font-weight: bold; font-size: 0.85rem; }}
+        .wa-btn {{ background: var(--whatsapp); color: #fff; text-decoration: none; padding: 8px 10px; border-radius: 8px; font-weight: bold; font-size: 0.85rem; }}
+        
         footer {{ text-align: center; margin-top: 40px; color: #64748b; font-size: 0.85rem; }}
     </style>
 </head>
@@ -174,19 +245,45 @@ def generate_html(deals):
         <a href="https://cashk.app.link/vu5M0Y40L6b" target="_blank" rel="nofollow">Claim Cashback 👉</a>
     </div>
 
-    <main class="container">
+    <!-- 1-Click Brand Filter -->
+    <div class="filter-container">
+        <button class="filter-btn active" onclick="filterDeals('all')">🔥 All Deals</button>
+        <button class="filter-btn" onclick="filterDeals('flipkart')">Flipkart</button>
+        <button class="filter-btn" onclick="filterDeals('amazon')">Amazon</button>
+        <button class="filter-btn" onclick="filterDeals('ajio')">Ajio</button>
+        <button class="filter-btn" onclick="filterDeals('myntra')">Myntra</button>
+    </div>
+
+    <main class="container" id="dealsGrid">
         {cards_html}
     </main>
 
     <footer>
         <p>© 2026 Deal Offers Looto • All deals automatically synced from Telegram.</p>
     </footer>
+
+    <script>
+        function filterDeals(brand) {{
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const cards = document.querySelectorAll('.deal-card');
+            cards.forEach(card => {{
+                if (brand === 'all' || card.getAttribute('data-brand') === brand) {{
+                    card.style.display = 'flex';
+                }} else {{
+                    card.style.display = 'none';
+                }}
+            }});
+        }}
+    </script>
 </body>
 </html>"""
     
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(full_html)
-    print("✅ Clean CollectionPage Schema generated successfully!")
+    print("✅ index.html generated successfully!")
 
 def main():
     existing_deals = load_existing_deals()
@@ -200,6 +297,7 @@ def main():
 
     save_deals(rolling_50)
     generate_html(rolling_50)
+    generate_seo_files()
 
 if __name__ == "__main__":
     main()
