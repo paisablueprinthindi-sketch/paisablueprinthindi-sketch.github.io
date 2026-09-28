@@ -88,21 +88,13 @@ def generate_html(deals):
     cards_html = ""
 
     for idx, deal in enumerate(deals):
-        # Google Schema item
+        # 100% Valid Google Directory Item Schema (No missing price error)
         schema_items.append({
             "@type": "ListItem",
             "position": idx + 1,
-            "item": {
-                "@type": "Product",
-                "name": deal["text"].replace('"', '').replace('\n', ' ')[:80],
-                "image": deal["image"] or "https://via.placeholder.com/300x200?text=Loot+Deal",
-                "offers": {
-                    "@type": "Offer",
-                    "url": deal["link"],
-                    "priceCurrency": "INR",
-                    "availability": "https://schema.org/InStock"
-                }
-            }
+            "name": deal["text"].replace('"', '').replace('\n', ' ')[:80],
+            "url": deal["link"],
+            "image": deal["image"] or "https://paisablueprinthindi-sketch.github.io/"
         })
 
         # Card HTML
@@ -121,11 +113,18 @@ def generate_html(deals):
         </div>
         """
 
+    # Official CollectionPage Schema for Deals Portals
     schema_json = json.dumps({
         "@context": "https://schema.org",
-        "@type": "ItemList",
-        "name": "Live Loot Deals & Online Shopping Discounts",
-        "itemListElement": schema_items
+        "@type": "CollectionPage",
+        "name": "Deal Offers Looto - Live Loot Deals & Discounts",
+        "url": "https://paisablueprinthindi-sketch.github.io/",
+        "description": "आज की सबसे सस्ती लूट डील्स, भारी डिस्काउंट और कूपन कोड्स। Amazon, Flipkart, Myntra की टॉप लाइव डील्स।",
+        "mainEntity": {
+            "@type": "ItemList",
+            "numberOfItems": len(deals),
+            "itemListElement": schema_items
+        }
     }, ensure_ascii=False)
 
     full_html = f"""<!DOCTYPE html>
@@ -187,17 +186,15 @@ def generate_html(deals):
     
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(full_html)
-    print("✅ index.html with Schema generated successfully!")
+    print("✅ Clean CollectionPage Schema generated successfully!")
 
 def main():
     existing_deals = load_existing_deals()
     fresh_deals = fetch_telegram_deals()
 
-    # Merge fresh with existing based on ID
     existing_ids = {d["id"] for d in existing_deals}
     new_additions = [d for d in fresh_deals if d["id"] not in existing_ids]
 
-    # Combined with newest first
     all_deals = new_additions + existing_deals
     rolling_50 = all_deals[:MAX_DEALS]
 
