@@ -1,5 +1,15 @@
 [
   {
+    "id": "Deal_Offers_Looto/516",
+    "brand": "myntra",
+    "image": null,
+    "html": "Myntra : Upto 85% Off On Duke Shoes.<br/><br/>Men's : <a href=\"https://myntr.it/QiIg06R\" rel=\"noopener\" target=\"_blank\">https://myntr.it/QiIg06R</a><br/>Women's : <a href=\"https://myntr.it/sCtt1rr\" rel=\"noopener\" target=\"_blank\">https://myntr.it/sCtt1rr</a>",
+    "text": "Myntra : Upto 85% Off On Duke Shoes.\nMen's : \nhttps://myntr.it/QiIg06R\nWomen's : \nhttps://myntr.it/sCtt1rr",
+    "full_text": "Myntra : Upto 85% Off On Duke Shoes. Men's :  https://myntr.it/QiIg06R Women's :",
+    "link": "https://myntr.it/QiIg06R",
+    "time": "06 Oct, 06:58 AM"
+  },
+  {
     "id": "Deal_Offers_Looto/515",
     "brand": "flipkart",
     "image": null,
@@ -488,15 +498,5 @@
     "full_text": "Flipkart Loot: Branded Footwear Upto 70% Off Wildcraft – Min. 70% Off https://fk",
     "link": "https://fktr.in/zV8kLua",
     "time": "02 Oct, 05:18 PM"
-  },
-  {
-    "id": "Deal_Offers_Looto/465",
-    "brand": "other",
-    "image": "https://cdn4.telesco.pe/file/RsOQtmvPqIVqWrICxSd75h_e77AC6XENAG35PTrJ_Zc4X8pTbmu4MZDXDHL9pA90FesgJO6HrVopkwEmJbaAUDLudnBfIYMLTQivuEeoRcgzujGAAt8UNTyIFfeb7Vq42chYGMKwpi8CNQaDzo8CA0rCcZJrjs0OctKYZyCY3eJtRcKMg6UARudM0TiGlk9thHblaM3LI2EXzoSjIjtKCMNnbo1O1LGVuxPurgMY7EWGbnWugggnKRAUoOpusgpXd9riT0bu9SFPh9XexGwVmgQEvgM-bcCD6VR488RA3nFVKpHinZseBntSJDmcBMHw834p0EA4mmfaQkA14R4XIw.jpg",
-    "html": "Tiaraa LOOT: Get 3 products @ 249 INR (Including shipping)<br/><br/>Use code : LOOT3<br/><br/>Link : <a href=\"https://bitli.in/toa1dc5\" rel=\"noopener\" target=\"_blank\">https://bitli.in/toa1dc5</a>",
-    "text": "Tiaraa LOOT: Get 3 products @ 249 INR (Including shipping)\nUse code : LOOT3\nLink : \nhttps://bitli.in/toa1dc5",
-    "full_text": "Tiaraa LOOT: Get 3 products @ 249 INR (Including shipping) Use code : LOOT3 Link",
-    "link": "https://bitli.in/toa1dc5",
-    "time": "02 Oct, 04:38 PM"
   }
 ]
