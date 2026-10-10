@@ -1,5 +1,25 @@
 [
   {
+    "id": "Deal_Offers_Looto/2018",
+    "brand": "ajio",
+    "image": "https://cdn4.telesco.pe/file/VYaZrbYiTCVhJk-SiR2xqDUrCJIXwDJNJnSPVStCvJHfLy3KKvAk0clP2wBVXOP-pSX7-C4tJdKRLKdp_wnaYB3AghPDzUH20Fb-VX4LtQzLk0uxs808BQ_n7cKZcHs3q-UM2c0t4NQC-WReRs-ZlokvoePda908Mktb79d2dC5pSGlQ-vXUmkW1pT8nA7e0Fo6J53BSX_G38nmND5guOQKireP3OEcJNtXqM57jQNv9QKQgKM2vZv2dWFPdo68p-g38hEboiN0kBjqg2lw4htwEZb3GZQnm48b8XNSqCumY9LUAii2eacyIycxGfCWZeYwJr15oxs9Ez75tOV8dVQ.jpg",
+    "html": "AJIO : TeamSpirit Clothing Starts @90<br/><br/>Men : <a href=\"https://ajiio.in/KmkvbHg\" rel=\"noopener\" target=\"_blank\">https://ajiio.in/KmkvbHg</a><br/>Women : <a href=\"https://ajiio.in/HKI6uOJ\" rel=\"noopener\" target=\"_blank\">https://ajiio.in/HKI6uOJ</a>",
+    "text": "AJIO : TeamSpirit Clothing Starts @90\nMen : \nhttps://ajiio.in/KmkvbHg\nWomen : \nhttps://ajiio.in/HKI6uOJ",
+    "full_text": "AJIO : TeamSpirit Clothing Starts @90 Men :  https://ajiio.in/KmkvbHg Women :  h",
+    "link": "https://ajiio.in/KmkvbHg",
+    "time": "10 Oct, 05:00 PM"
+  },
+  {
+    "id": "Deal_Offers_Looto/2019",
+    "brand": "flipkart",
+    "image": null,
+    "html": "Loot: ClayCo. Matcha Enzyme Dead Skin Removal  Scrub (45 g) @383<br/><br/><a href=\"https://fktr.in/FrL34E4\" rel=\"noopener\" target=\"_blank\">https://fktr.in/FrL34E4</a>",
+    "text": "Loot: ClayCo. Matcha Enzyme Dead Skin Removal  Scrub (45 g) @383\nhttps://fktr.in/FrL34E4",
+    "full_text": "Loot: ClayCo. Matcha Enzyme Dead Skin Removal  Scrub (45 g) @383 https://fktr.in",
+    "link": "https://fktr.in/FrL34E4",
+    "time": "10 Oct, 05:00 PM"
+  },
+  {
     "id": "Deal_Offers_Looto/2017",
     "brand": "flipkart",
     "image": null,
@@ -478,25 +498,5 @@
     "full_text": "Loot: Google 45 W Charger @ 2899 https://fktr.in/zKAMcri",
     "link": "https://fktr.in/zKAMcri",
     "time": "09 Oct, 06:57 PM"
-  },
-  {
-    "id": "Deal_Offers_Looto/1968",
-    "brand": "flipkart",
-    "image": null,
-    "html": "Loot: Samsung 25 W Charger @ 699<br/><br/><a href=\"https://fktr.in/ZA8ZyHf\" rel=\"noopener\" target=\"_blank\">https://fktr.in/ZA8ZyHf</a>",
-    "text": "Loot: Samsung 25 W Charger @ 699\nhttps://fktr.in/ZA8ZyHf",
-    "full_text": "Loot: Samsung 25 W Charger @ 699 https://fktr.in/ZA8ZyHf",
-    "link": "https://fktr.in/ZA8ZyHf",
-    "time": "09 Oct, 06:41 PM"
-  },
-  {
-    "id": "Deal_Offers_Looto/1969",
-    "brand": "flipkart",
-    "image": null,
-    "html": "Loot: CMF by Nothing 33W Charger @ ₹699<br/><a href=\"https://fktr.in/sZpUrer\" rel=\"noopener\" target=\"_blank\">https://fktr.in/sZpUrer</a><br/><br/>CMF by Nothing 65W Charger @ ₹2,099<br/><a href=\"https://fktr.in/B9T4CC0\" rel=\"noopener\" target=\"_blank\">https://fktr.in/B9T4CC0</a>",
-    "text": "Loot: CMF by Nothing 33W Charger @ ₹699\nhttps://fktr.in/sZpUrer\nCMF by Nothing 65W Charger @ ₹2,099\nhttps://fktr.in/B9T4...",
-    "full_text": "Loot: CMF by Nothing 33W Charger @ ₹699 https://fktr.in/sZpUrer CMF by Nothing 6",
-    "link": "https://fktr.in/sZpUrer",
-    "time": "09 Oct, 06:41 PM"
   }
 ]
