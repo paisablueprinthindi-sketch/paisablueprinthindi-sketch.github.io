@@ -1,5 +1,15 @@
 [
   {
+    "id": "Deal_Offers_Looto/2013",
+    "brand": "flipkart",
+    "image": null,
+    "html": "GRAB: Garmin Forerunner 965 @ ₹31,499<br/><a href=\"https://fktr.in/6mPfNz0\" rel=\"noopener\" target=\"_blank\">https://fktr.in/6mPfNz0</a><br/><br/>Garmin Forerunner 55 @ ₹11,999<br/><a href=\"https://fktr.in/kE38lIY\" rel=\"noopener\" target=\"_blank\">https://fktr.in/kE38lIY</a><br/><br/>Price Live for 1 Hour Only",
+    "text": "GRAB: Garmin Forerunner 965 @ ₹31,499\nhttps://fktr.in/6mPfNz0\nGarmin Forerunner 55 @ ₹11,999\nhttps://fktr.in/kE38lIY\nPri...",
+    "full_text": "GRAB: Garmin Forerunner 965 @ ₹31,499 https://fktr.in/6mPfNz0 Garmin Forerunner ",
+    "link": "https://fktr.in/6mPfNz0",
+    "time": "10 Oct, 03:30 PM"
+  },
+  {
     "id": "Deal_Offers_Looto/2011",
     "brand": "flipkart",
     "image": null,
@@ -488,15 +498,5 @@
     "full_text": "Loot: Best Deals On Mouse Start @99 https://fktr.in/qI8UU1f",
     "link": "https://fktr.in/qI8UU1f",
     "time": "09 Oct, 05:51 PM"
-  },
-  {
-    "id": "Deal_Offers_Looto/1962",
-    "brand": "flipkart",
-    "image": null,
-    "html": "Loot - Boldfit Jackets starts at 374, Up to 80% Off<br/><br/><a href=\"https://fktr.in/RHPKwa5\" rel=\"noopener\" target=\"_blank\">https://fktr.in/RHPKwa5</a>",
-    "text": "Loot - Boldfit Jackets starts at 374, Up to 80% Off\nhttps://fktr.in/RHPKwa5",
-    "full_text": "Loot - Boldfit Jackets starts at 374, Up to 80% Off https://fktr.in/RHPKwa5",
-    "link": "https://fktr.in/RHPKwa5",
-    "time": "09 Oct, 05:36 PM"
   }
 ]
